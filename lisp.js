@@ -59,10 +59,6 @@ const assoc = (key, alist) => {
     return assoc(key, cdr(alist))
   }
 }
-const mapcar = (fn, alist) => {
-  if (alist === NIL) return NIL
-  return cons(fn(car(alist)), mapcar(fn, cdr(alist)))
-}
 const evlis = (m, a) => {
   if (m === NIL) return NIL
   return cons(lEval(car(m), a), evlis(cdr(m), a))
