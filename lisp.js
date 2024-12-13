@@ -1,5 +1,12 @@
-export const lApply = (fn, x, a) => {
-  if (typeof fn === 'symbol') {
+/**
+ *
+ * @param fn Function
+ * @param x arguments
+ * @param a context
+ * @return {*|[*,*]|symbol}
+ */
+export const lApply = (fn, x, a = NIL) => {
+  if (atom(fn)) {
     switch (fn) {
       case CAR: return caar(x)
       case CDR: return cdar(x)
@@ -11,7 +18,7 @@ export const lApply = (fn, x, a) => {
   } else if (car(fn) === LAMBDA) {
     return lEval(caddr(fn), pairlis(cadr(fn), x, a))
   } else if (car(fn) === LABEL) {
-    return lApply(caddr(fn), x, cons(cons(cadr(fn), caddr(fn)), a))
+    return lApply(caddr(fn), cdr(x), cons(cons(cadr(fn), caddr(fn)), a))
   }
   throw new Error('What is this?')
 }
@@ -35,11 +42,12 @@ const cdar = L => L[0]?.[1] ?? NIL
 const cadr = L => L[1]?.[0] ?? NIL
 const caddr = L => L[1]?.[1]?.[0] ?? NIL
 const cadar = L => L[0]?.[1]?.[0] ?? NIL
-const cons = (L1, L2) => [L1, L2]
+export const cons = (L1, L2) => [L1, L2]
 const atom = x =>
   typeof x === 'number'
   || typeof x === 'string'
   || typeof x === 'symbol'
+
 const pairlis = (keys, values, alist) => {
   if (keys === NIL || values === NIL) {
     return alist
@@ -68,26 +76,6 @@ const evcon = (c, a) => {
     return lEval(cadar(c), a)
   }
   return evcon(cdr(c), a)
-}
-
-
-export const evalquote = (fn, x) => lApply(fn, x, NIL)
-export const L = (...a) => {
-  if (a.length === 0) return NIL
-  const [h, ...t] = a
-  return cons(h, L(...t))
-}
-
-export const unL = (aList) => {
-  if (aList === NIL) return []
-  return [aList[0]].concat(unL(aList[1]))
-}
-
-export const reader = (results) => {
-  if (Array.isArray(results)) {
-    return unL(results).map(reader)
-  }
-  return results
 }
 
 export const T = Symbol('T')
