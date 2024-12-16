@@ -11,7 +11,7 @@ export const lApply = (fn, x, a = NIL) => {
       case CAR: return caar(x)
       case CDR: return cdar(x)
       case CONS: return cons(car(x), cadr(x))
-      case ATOM: return atom(car(x))
+      case ATOM: return atom(car(x)) ? T : NIL
       case EQ: return car(x) === cadr(x) ? T : NIL
       default: return lApply(lEval(fn, a), x, a)
     }
@@ -25,7 +25,11 @@ export const lApply = (fn, x, a = NIL) => {
 
 export const lEval = (e, a) => {
   if (atom(e)) {
-    return cdr(assoc(e, a))
+    const h = assoc(e, a)
+    if (h === NIL) {
+      throw new Error(`Variable ${typeof e === 'symbol' ? e.description : e} is unbounded`)
+    }
+    return cdr(h)
   } else if (atom(car(e))) {
     if (car(e) === QUOTE) return cadr(e)
     else if (car(e) === COND) return evcon(cdr(e), a)
@@ -44,9 +48,7 @@ const caddr = L => L[1]?.[1]?.[0] ?? NIL
 const cadar = L => L[0]?.[1]?.[0] ?? NIL
 export const cons = (L1, L2) => [L1, L2]
 const atom = x =>
-  typeof x === 'number'
-  || typeof x === 'string'
-  || typeof x === 'symbol'
+  !Array.isArray(x)
 
 const pairlis = (keys, values, alist) => {
   if (keys === NIL || values === NIL) {
