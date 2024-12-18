@@ -41,6 +41,7 @@ console.log(reader(
 ))
 
 const equalProgram = fromSource(
+  // language=lisp
   `(label equal (lambda (x y) (cond
   ((atom x) (cond ((atom y) (eq x y)) ((quote t) (quote nil))))
   ((equal (car x) (car y)) (equal (cdr x) (cdr y)))
@@ -49,29 +50,36 @@ const equalProgram = fromSource(
 )
 
 console.log(reader(fromSource(
+  // language=lisp
   `(label equal (lambda (x y) (cond
-  ((atom x) (cond ((atom y) (eq x y)) ('t 'nil)))
-  ((equal (car x) (car y)) (equal (cdr x) (cdr y)))
-  ('t 'nil)
-)))`
+    ((atom x) (cond ((atom y) (eq x y)) ('t 'nil)))
+    ((equal (car x) (car y)) (equal (cdr x) (cdr y)))
+    ('t 'nil)
+  )))`
 )))
 
 console.log(reader(
   lApply(
     equalProgram,
+    // language=lisp
     fromSource('(equal (1 2 3) (4 5 6))')
   )
 ))
 
+// language=lisp
 console.log(reader(fromSource(`('t 't 't)`)))
 
+// language=lisp
 console.log(reader(fromSource(`(x 't)`)))
 
+// language=lisp
 console.log(reader(fromSource(`(lambda (x) (eq x 'nil))`)))
 
 console.log(reader(
   lApply(
+    // language=lisp
     fromSource(`(lambda (x) (eq x 'nil))`),
+    // language=lisp
     fromSource('(t)')
   )
 ))
