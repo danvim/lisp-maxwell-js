@@ -1,9 +1,9 @@
-import { cons, NIL } from './lisp.js'
+import { NIL } from './lisp.js'
 
 export const L = (...a) => {
   if (a.length === 0) return NIL
   const [h, ...t] = a
-  return cons(h, L(...t))
+  return [h, L(...t)]
 }
 
 export const unL = (aList) => {

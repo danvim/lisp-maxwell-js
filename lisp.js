@@ -1,8 +1,7 @@
 /**
- *
  * @param fn Function
  * @param x arguments
- * @param a context
+ * @param a {any[]|symbol} context
  * @return {*|[*,*]|symbol}
  */
 export const lApply = (fn, x, a = NIL) => {
@@ -57,7 +56,7 @@ const pairlis = (keys, values, alist) => {
   return cons(cons(car(keys), car(values)), pairlis(cdr(keys), cdr(values), alist))
 }
 /**
- * Returns value from an associated list by key '((a 1) (b 2) (c 3)
+ * Returns value from an associated list by key `'((a 1) (b 2) (c 3)`
  */
 const assoc = (key, alist) => {
   const h = car(alist)

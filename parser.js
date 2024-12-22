@@ -1,4 +1,17 @@
-import { ATOM, CAR, CDR, COND, cons, CONS, EQ, LABEL, LAMBDA, NIL, QUOTE, T } from './lisp.js'
+import {
+  ATOM,
+  CAR,
+  CDR,
+  COND,
+  cons,
+  CONS,
+  EQ,
+  LABEL,
+  LAMBDA,
+  NIL,
+  QUOTE,
+  T,
+} from './lisp.js'
 
 const tokenRes = {
   bl: /\(/y,
@@ -8,14 +21,12 @@ const tokenRes = {
   number: /([+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)/y,
   quote: /'/y,
   symbol: /([^()\s]+)/y,
-  space: /(\s+)/y
+  space: /(\s+)/y,
 }
 
 // Requires unescaping only \|
-const barredSymbol = /\|((?:[^|]|\\\|)*[^\\])\|/
-const unescapeBars = s => s.replaceAll('\\|', '|')
-const symbolEscapeChars = /(\\[\w'"])/
-const numberMatcher = /^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/
+const unescapeBarredSymbols = (s) => s.replaceAll('\\|', '|')
+const unescapeSymbols = (s) => s.replaceAll(/\\(.)/g, '$1')
 
 export const tokenize = (source) => {
   const tokens = []
@@ -28,7 +39,7 @@ export const tokenize = (source) => {
         const matches = re.exec(source)
         return [key, matches]
       })
-      .filter(([key, matches]) => matches !== null)
+      .filter(([, matches]) => matches !== null)
       .toSorted((a, b) => a[1].index - b[1].index)
 
     if (matches.length === 0) {
@@ -47,35 +58,37 @@ export const tokenize = (source) => {
   return tokens
 }
 
-export const parse = (parts, i = 0) => {
-  if (i > parts.length - 1) {
+export const parseRecurse = (
+  parts,
+  i = 0,
+  parseSymbols = new Map(Object.entries(symbolsMap)),
+) => {
+  if (i > parts.length) {
+    throw new Error('Expected more tokens')
+  }
+  if (i === parts.length) {
     return null
   }
   const [type, content] = parts[i]
   if (type === 'bl') {
     if (i + 1 <= parts.length) {
-      if (parts[i + 1][0] === 'br') {
-        // empty list
-        return NIL
-      } else {
-        const {next: thing, i: nextI} = parse(parts, i + 1)
-        const nextParse = parse(parts, nextI + 1)
-        return {
-          next: [thing, nextParse ? nextParse.next : NIL],
-          i: nextParse?.i ?? nextI
-        }
+      const { next: thing, i: nextI } = parseRecurse(parts, i + 1, parseSymbols)
+      const nextParse = parseRecurse(parts, nextI, parseSymbols)
+      return {
+        next: [thing, nextParse ? nextParse.next : NIL],
+        i: nextParse?.i ?? nextI,
       }
     } else {
       throw new Error('Cannot open bracket at last position')
     }
   } else if (type === 'br') {
-    return { next: NIL, i }
+    return { next: NIL, i: i + 1 }
   } else if (type === 'quote') {
     if (i + 1 <= parts.length) {
-      const {next: thing, i: nextI} = parse(parts, i + 1)
+      const { next: thing, i: nextI } = parseRecurse(parts, i + 1, parseSymbols)
       return {
         next: [cons(QUOTE, [thing[0], NIL]), thing[1]],
-        i: nextI
+        i: nextI,
       }
     } else {
       throw new Error('Cannot use quote at last position')
@@ -85,25 +98,29 @@ export const parse = (parts, i = 0) => {
     let thing = null
     if (type === 'number') {
       thing = parseFloat(content)
-    } else if (type === 'barredSymbol') {
-      thing = content
     } else if (type === 'string') {
-      thing = { type: 'string', content }
+      thing = content
     } else if (type === 'symbol') {
-      thing = symbolsMap[content] ?? content
+      thing = upsertSymbol(unescapeSymbols(content), parseSymbols)
+    } else if (type === 'barredSymbol') {
+      thing = upsertSymbol(unescapeBarredSymbols(content), parseSymbols)
     }
-    const nextParse = parse(parts, i + 1)
+    const nextParse = parseRecurse(parts, i + 1, parseSymbols)
+    if (nextParse === null) {
+      // EOF
+      return {
+        next: [thing, NIL],
+        i,
+      }
+    }
     return {
-      next: [
-        thing,
-        nextParse?.next ?? NIL
-      ],
-      i: nextParse?.i ?? i
+      next: [thing, nextParse.next],
+      i: nextParse?.i,
     }
   }
 }
 
-export const fromSource = (source) => parse(tokenize(source)).next[0]
+export const parse = (source) => parseRecurse(tokenize(source)).next[0]
 
 const symbolsMap = {
   t: T,
@@ -117,4 +134,14 @@ const symbolsMap = {
   eq: EQ,
   lambda: LAMBDA,
   label: LABEL,
+}
+
+const upsertSymbol = (content, symbolsMap) => {
+  const symbol = symbolsMap.get(content)
+  if (symbol) {
+    return symbol
+  }
+  const newSymbol = Symbol(content)
+  symbolsMap.set(content, newSymbol)
+  return newSymbol
 }
