@@ -1,6 +1,17 @@
 import { describe, test } from 'node:test'
 import * as assert from 'node:assert'
-import { ATOM, CAR, CDR, CONS, EQ, LABEL, LAMBDA, lApply, lEval, NIL, T } from './lisp.js'
+import {
+  ATOM,
+  CAR,
+  CDR,
+  CONS,
+  EQ,
+  LAMBDA,
+  lApply,
+  lEval,
+  NIL,
+  T,
+} from './lisp.js'
 import { L } from './helper.js'
 
 describe('apply', () => {
@@ -60,14 +71,7 @@ describe('apply', () => {
 
   describe('function is unknown atom', () => {
     test('function value is evaluated from context and then applies to arguments', () => {
-      assert.strictEqual(
-        lApply(
-          'atomAlias',
-          L(NIL),
-          L(['atomAlias', ATOM])
-        ),
-        T
-      )
+      assert.strictEqual(lApply('atomAlias', L(NIL), L(['atomAlias', ATOM])), T)
     })
     test('function that does not exist in context should throw exception', () => {
       assert.throws(() => lApply('unknownSymbol', L(), L()))
@@ -76,22 +80,13 @@ describe('apply', () => {
 
   describe('lambda', () => {
     test('returns evaluation result from lambda expression binding argument to parameter symbol', () => {
-      assert.strictEqual(
-        lApply(
-          L(LAMBDA, L('x'), 'x'),
-          L(12)
-        ),
-        12
-      )
+      assert.strictEqual(lApply(L(LAMBDA, L('x'), 'x'), L(12)), 12)
     })
 
     test('multiple parameter bindings and function call expressions are evaluated', () => {
       assert.deepStrictEqual(
-        lApply(
-          L(LAMBDA, L('x', 'y'), L(CONS, 'x', 'y')),
-          L(1, 2)
-        ),
-        [1, 2]
+        lApply(L(LAMBDA, L('x', 'y'), L(CONS, 'x', 'y')), L(1, 2)),
+        [1, 2],
       )
     })
 
@@ -100,9 +95,9 @@ describe('apply', () => {
         lApply(
           L(LAMBDA, L('x'), 'x'),
           L('localValue'),
-          L(['x', 'shadowedValue'])
+          L(['x', 'shadowedValue']),
         ),
-        'localValue'
+        'localValue',
       )
     })
   })

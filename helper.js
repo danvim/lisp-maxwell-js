@@ -13,11 +13,7 @@ export const unL = (aList) => {
 
 /** Convert JS list into Lisp List representation, assuming JS array of 2 elems is a Lisp pair. */
 export const $ = (arr) =>
-  L(...arr.map(item =>
-    Array.isArray(item)
-      ? $(item)
-      : item
-  ))
+  L(...arr.map((item) => (Array.isArray(item) ? $(item) : item)))
 
 /** Inverse of a2L. Converts Lisp list representation into JS arrays */
 export const reader = (results) => {

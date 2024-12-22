@@ -1,7 +1,7 @@
-import { test, describe } from 'node:test'
+import { describe, test } from 'node:test'
 import * as assert from 'node:assert'
 import { NIL } from './lisp.js'
-import {$} from './helper.js'
+import { $ } from './helper.js'
 
 describe('$', () => {
   test('Should convert empty array', () => {
