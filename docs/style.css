@@ -1,0 +1,147 @@
+:root {
+  --sl-font-sans: 'Inter', sans-serif;
+  --sl-font-mono: 'JetBrains Mono', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  color-scheme: dark;
+}
+
+html {
+  font-family: var(--sl-font-sans);
+}
+
+code,
+textarea {
+  font-family: var(--sl-font-mono);
+  line-height: 1.5;
+  font-size: 0.85rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 300;
+}
+
+:not(:defined) {
+  visibility: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 1rem;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+main {
+  display: flex;
+  flex: 1;
+  height: 0;
+  gap: 1rem;
+
+  > * {
+    flex: 1;
+    overflow: auto;
+  }
+}
+
+#input {
+  width: 100%;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background-color: var(--sl-color-neutral-0);
+  border: 0;
+  border-top: 1px solid var(--sl-color-neutral-300);
+  outline: none;
+  resize: none;
+  transition: box-shadow 0.15s ease;
+
+  &:focus {
+    box-shadow: inset 0 0 0 1px var(--sl-color-primary-500);
+  }
+}
+
+pre {
+  margin: 0;
+  line-height: 1.5;
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.preview {
+  color: var(--sl-color-neutral-400);
+  font-style: italic;
+}
+
+.hl {
+  overflow: auto;
+
+  .bl,
+  .br {
+    color: #b8b8b5;
+  }
+
+  .barredSymbol {
+    color: #ef596f;
+  }
+
+  .string {
+    color: #89ca78;
+  }
+
+  .number {
+    color: #d19a66;
+  }
+
+  .quote {
+    color: #2bbac5;
+  }
+
+  .symbol {
+    color: #ef596f;
+  }
+
+  :not([data-symbol='lambda'] + .space) + .bl + .symbol,
+  .bl:first-child + .symbol {
+    /* function identifier */
+    color: #61afef;
+  }
+}
+
+#tree-view sl-tag {
+  margin-right: 0.5rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--sl-color-neutral-300);
+  border-radius: 0.5rem;
+  background-color: var(--sl-color-neutral-50);
+
+  > h2 {
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 1rem 1rem;
+    margin: 0;
+  }
+
+  > :nth-child(2) {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+  }
+}

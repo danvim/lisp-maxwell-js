@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="sl-theme-dark" lang="en">
+<head>
+  <title>Lisp parser</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital@0;1&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/themes/dark.css" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.19.1/cdn/shoelace.js" type="module"></script>
+
+  <script src="./page.js" type="module"></script>
+  <link href="./style.css" rel="stylesheet">
+</head>
+<body>
+<h1>Lisp parser</h1>
+<main>
+  <div class="card">
+    <h2>Input</h2>
+    <textarea id="input" spellcheck="false">(label equal (lambda (x y) (cond
+  ((atom x) (cond ((atom y) (eq x y)) ('t 'nil)))
+  ((equal (car x) (car y)) (equal (cdr x) (cdr y)))
+  ('t 'nil)
+)))</textarea>
+  </div>
+  <div class="card">
+    <h2>Tokenized results</h2>
+    <pre class="hl"><code id="output"></code></pre>
+  </div>
+  <div class="card">
+    <h2>Parsed AST</h2>
+    <sl-tree class="tree-with-lines" id="tree-view"></sl-tree>
+  </div>
+</main>
+</body>
+</html>
