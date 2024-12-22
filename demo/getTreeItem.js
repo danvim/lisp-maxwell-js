@@ -41,7 +41,7 @@ export const getTreeItem = (value) => {
 
     nodes.append(
       typeof value === 'symbol'
-        ? value.description
+        ? escapeSymbol(value.description)
         : typeof value === 'string'
           ? `"${value}"`
           : value,
@@ -66,11 +66,11 @@ const printListItem = (list, depth = -1) =>
     ? ''
     : !Array.isArray(list)
       ? '. ' + print(list, depth)
-      : print(list[0], depth) + ' ' + printListItem(list[1], depth).trim()
+      : (print(list[0], depth) + ' ' + printListItem(list[1], depth)).trim()
 
 const print = (value, depth = -1) =>
   typeof value === 'symbol'
-    ? value.description
+    ? escapeSymbol(value.description)
     : typeof value === 'string'
       ? `"${value}"`
       : Array.isArray(value)
@@ -78,3 +78,9 @@ const print = (value, depth = -1) =>
           ? '(...)'
           : '(' + printListItem(value, depth - 1) + ')'
         : value
+
+const symbolRequiresEscape = (name) =>
+  name.match(/[ '"]|^([+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)$/) !== null
+
+const escapeSymbol = (name) =>
+  symbolRequiresEscape(name) ? `|${name.replaceAll('|', '\\|')}|` : name
