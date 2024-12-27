@@ -1,4 +1,6 @@
 import { NIL } from '../lib/lisp.js'
+import { print } from '../lib/print.js'
+import { escapeSymbol } from '../lib/escapeSymbol.js'
 
 export const getTreeItem = (value) => {
   const nodes = document.createDocumentFragment()
@@ -50,6 +52,7 @@ export const getTreeItem = (value) => {
     return nodes
   }
 }
+
 const arrayFromLispList = (pair) => {
   if (pair === NIL) {
     return []
@@ -60,27 +63,3 @@ const arrayFromLispList = (pair) => {
     return pair
   }
 }
-
-const printListItem = (list, depth = -1) =>
-  list === NIL
-    ? ''
-    : !Array.isArray(list)
-      ? '. ' + print(list, depth)
-      : (print(list[0], depth) + ' ' + printListItem(list[1], depth)).trim()
-
-const print = (value, depth = -1) =>
-  typeof value === 'symbol'
-    ? escapeSymbol(value.description)
-    : typeof value === 'string'
-      ? `"${value}"`
-      : Array.isArray(value)
-        ? depth === 0
-          ? '(...)'
-          : '(' + printListItem(value, depth - 1) + ')'
-        : value
-
-const symbolRequiresEscape = (name) =>
-  name.match(/[ '"]|^([+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?)$/) !== null
-
-const escapeSymbol = (name) =>
-  symbolRequiresEscape(name) ? `|${name.replaceAll('|', '\\|')}|` : name

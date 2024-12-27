@@ -1,0 +1,57 @@
+atom {
+  Symbol |
+  String |
+  Number
+}
+
+expression {
+  atom |
+  List |
+  Quote
+}
+
+listContents {
+  defList { DefLike VarName expression* } |
+  lambdaList { Lambda "(" Property* ")" expression*} |
+  anyList { Operator? expression* }
+}
+
+VarName { Symbol }
+Property { Symbol }
+
+@precedence { operator @left }
+Operator { !operator Symbol }
+
+Symbol {
+  trivialSymbol |
+  barredSymbol
+}
+
+List { "(" listContents ")" }
+
+Quote { "'" expression }
+
+@top Program { expression* }
+
+@tokens {
+  trivialSymbol { (!["| \t\n\r;:()'] | "\\" _)+ }
+  barredSymbol { '|' (![|\\] | "\\" _)* '|' }
+  String { '"' (!["\\] | "\\" _)* '"' }
+  Number {
+    ("+" | "-")? (@digit+ ("." @digit* "M"?)? | "." @digit+) (("e" | "E") ("+" | "-")? @digit+ "M"?)?
+  }
+  LineComment { ";" ![\n]* }
+  space { $[ \t\n\r]+ }
+  "(" ")"
+
+  @precedence {Number, trivialSymbol}
+}
+
+DefLike[@dynamicPrecedence=1] { @extend<trivialSymbol, "label"> }
+Lambda[@dynamicPrecedence=2] { @extend<trivialSymbol, "lambda"> }
+
+@skip { space | LineComment }
+
+@detectDelim
+
+@external propSource highlighting from "./highlight.js"

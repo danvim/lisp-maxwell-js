@@ -1,5 +1,6 @@
 import { parseFromTokens, tokenize } from '../lib/parser.js'
 import { getTreeItem } from './getTreeItem.js'
+import '../codemirror/editor.js'
 
 const inputTextArea = document.getElementById('input')
 const outputArea = document.getElementById('output')

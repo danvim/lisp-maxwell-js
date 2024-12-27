@@ -9,12 +9,12 @@
 }
 
 html {
-  font-family: var(--sl-font-sans);
+  font-family: var(--sl-font-sans), sans-serif;
 }
 
 code,
 textarea {
-  font-family: var(--sl-font-mono);
+  font-family: var(--sl-font-mono), sans-serif;
   line-height: 1.5;
   font-size: 0.85rem;
 }
@@ -144,4 +144,43 @@ pre {
     overflow: auto;
     padding: 1rem;
   }
+}
+
+.cm-line {
+  line-height: 1.5;
+}
+
+.cm-mygutter > * {
+  padding: 0 0.5rem;
+}
+
+#history {
+  display: flex;
+  flex-direction: column;
+
+  > * {
+    overflow: clip;
+  }
+
+  > *:not(:last-child) {
+    border-bottom: 1px solid var(--sl-color-neutral-300);
+  }
+}
+
+#user-prompt {
+  > * {
+    overflow: clip;
+    margin-top: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--sl-color-neutral-300);
+  }
+}
+
+.repl-marker {
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.editable .user-marker {
+  color: var(--sl-color-primary-700);
 }

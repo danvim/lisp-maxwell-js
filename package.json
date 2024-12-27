@@ -7,13 +7,27 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "test": "node --test"
+    "test": "node --test",
+    "prepare": "lezer-generator codemirror/lezer/lisp.grammar -o codemirror/lezer/parser.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/runtime": "^7.26.0",
+    "@codemirror/autocomplete": "^6.18.4",
+    "@lezer/generator": "^1.7.2",
     "prettier": "^3.4.2",
     "vite": "^6.0.5"
+  },
+  "dependencies": {
+    "@codemirror/language": "^6.10.8",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.1",
+    "@lezer/highlight": "^1.2.1",
+    "@lezer/lr": "^1.4.2",
+    "@uiw/codemirror-extensions-basic-setup": "^4.23.7",
+    "@uiw/codemirror-theme-atomone": "^4.23.7",
+    "codemirror": "^6.0.1"
   }
 }
