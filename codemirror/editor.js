@@ -9,7 +9,7 @@ import { lisp } from './lispLanguage.js'
 import { basicSetup } from '@uiw/codemirror-extensions-basic-setup'
 import { atomoneInit } from '@uiw/codemirror-theme-atomone'
 import { gutter, GutterMarker, keymap } from '@codemirror/view'
-import { evalQuote, NIL } from '../lib/lisp.js'
+import { lEval, NIL } from '../lib/lisp.js'
 import { parse } from '../lib/parser.js'
 import { print } from '../lib/print.js'
 
@@ -94,7 +94,7 @@ const createEditor = (parent, { isEditable, doc, isUser }) => {
                     isUser: true,
                   })
                   try {
-                    const results = evalQuote(parse(program), NIL)
+                    const results = lEval(parse(program), NIL)
                     latestPrompt.out = print(results).toString()
                   } catch (e) {
                     latestPrompt.out = e.stack
