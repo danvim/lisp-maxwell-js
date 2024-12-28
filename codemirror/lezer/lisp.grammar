@@ -12,12 +12,16 @@ expression {
 
 listContents {
   defList { DefLike VarName expression* } |
-  lambdaList { Lambda "(" Property* ")" expression*} |
+  lambdaList { Lambda "(" Property* ")" expression* } |
+  letList { Let "(" Binding* ")" expression* } |
   anyList { Operator? expression* }
 }
 
 VarName { Symbol }
 Property { Symbol }
+Binding {
+  "(" Symbol expression? ")"
+}
 
 @precedence { operator @left }
 Operator { !operator Symbol }
@@ -49,6 +53,7 @@ Quote { "'" expression }
 
 DefLike[@dynamicPrecedence=1] { @extend<trivialSymbol, "label"> }
 Lambda[@dynamicPrecedence=2] { @extend<trivialSymbol, "lambda"> }
+Let[@dynamicPrecedence=3] { @extend<trivialSymbol, "let"> }
 
 @skip { space | LineComment }
 

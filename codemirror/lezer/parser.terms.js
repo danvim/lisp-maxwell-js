@@ -10,5 +10,7 @@ export const
   VarName = 10,
   Lambda = 11,
   Property = 12,
-  Operator = 13,
-  Quote = 14
+  Let = 13,
+  Binding = 14,
+  Operator = 15,
+  Quote = 16

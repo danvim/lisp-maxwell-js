@@ -45,11 +45,6 @@ const createEditor = (parent, { isEditable, doc, isUser }) => {
     }
     loadedHistory = promptHistory[historyPointer]
     const doc = promptHistory[historyPointer].in
-    console.log('loading history', historyPointer, {
-      from: 0,
-      to: view.state.doc.length,
-      insert: doc,
-    })
     view.dispatch({
       changes: {
         from: 0,
