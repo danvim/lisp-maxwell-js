@@ -1,5 +1,7 @@
 # Lisp parser and REPL
 
+![](./images/screenshot.png)
+
 An exercise to create a Lisp parser and REPL based on the Lisp as Maxwell Equations of Software in reference to the
 following pages:
 
